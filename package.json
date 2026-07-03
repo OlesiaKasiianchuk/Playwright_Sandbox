@@ -1,0 +1,16 @@
+{
+  "name": "ok_playwright",
+  "version": "1.0.0",
+  "description": "Sandbox learning project",
+  "license": "ISC",
+  "author": "Olesia Kasiianchuk",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@playwright/test": "^1.61.1",
+    "prettier": "^3.8.4"
+  }
+}
