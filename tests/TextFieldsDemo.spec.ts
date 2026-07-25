@@ -57,5 +57,11 @@ test.describe('DemoQA Text Box page', () => {
 
     // Email field should be marked invalid
     await expect(page.locator('#userEmail')).toHaveClass(/field-error/);
+    
+    // Hover over email field to trigger tooltip
+    await page.locator('#userEmail').hover();
+    // Verify native validation message
+    const validationMessage = await page.locator('#userEmail').evaluate((el: HTMLInputElement) => el.validationMessage);
+    expect(validationMessage).toContain("Please include an '@' in the email address");
   });
 });
