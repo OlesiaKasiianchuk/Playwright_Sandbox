@@ -1,21 +1,32 @@
-
-import { test } from '@playwright/test';
-import { WebTablesPage } from './WebTablesPage';
+import { test, expect } from '@playwright/test';
 
 test('verify web table', async ({ page }) => {
-  const web = new WebTablesPage(page);
+// ---- goto ----
+await page.goto('https://demoqa.com/webtables');
 
-  await web.goto();
-  await web.waitForTable();
+// ---- waitForTable ----
+const rows = page.locator('table tbody tr');
+await expect(rows).toHaveCount(3);
 
-  const row = web.getRowByEmail('cierra@example.com');
+// ---- getRowByEmail ----
+const email = 'cierra@example.com';
+const row = page.locator('table tbody tr', {
+has: page.locator('td', { hasText: email }),
+});
 
-  await web.expectRow(row, [
-    'Cierra',
-    'Vega',
-    '39',
-    'cierra@example.com',
-    '10000',
-    'Insurance',
-  ]);
+// ---- expectRow ----
+const cells = row.locator('td');
+
+const expectedValues = [
+'Cierra',
+'Vega',
+'39',
+'cierra@example.com',
+'10000',
+'Insurance',
+];
+
+for (let i = 0; i < expectedValues.length; i++) {
+await expect(cells.nth(i)).toHaveText(expectedValues[i]);
+}
 });
