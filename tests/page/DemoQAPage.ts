@@ -3,13 +3,10 @@ import { Page, Locator, expect } from '@playwright/test';
 export class DemoQAPage {
 private page: Page;
 
-private cardTitles: Locator;
-
 private baseUrl = 'https://demoqa.com';
 
 constructor(page: Page) {
 this.page = page;
-this.cardTitles = page.locator('div.card-body h5');
 }
 
 /**
@@ -76,5 +73,12 @@ await this.clickCardByName(name);
 */
 async verifyCurrentUrl(expectedUrl: string | RegExp): Promise<void> {
 await expect(this.page).toHaveURL(expectedUrl);
+}
+
+/**
+* Verify current Header matches expected value
+*/
+async verifyCurrentHeader(expectedHeader: string | RegExp): Promise<void> {
+    await expect(this.page.getByRole('heading', { name: expectedHeader })).toBeVisible();
 }
 }

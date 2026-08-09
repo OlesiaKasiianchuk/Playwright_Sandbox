@@ -4,20 +4,30 @@ import { DemoQAPage } from './page/DemoQAPage';
 test.describe('DemoQA Radio Button page', () => {
   test('should load page and verify the radio button check', async ({ page }) => {
     const demoQA = new DemoQAPage(page);
-    await demoQA.gotoSubPage('radio-button');
-    // Verify page URL and heading
-    await demoQA.verifyCurrentUrl(/radio-button/);
-    await expect(page.getByRole('heading', { name: 'Radio Button' })).toBeVisible();
 
+    await demoQA.goto();
+
+    // Click on 'Elements'
+    await demoQA.clickCardByName('Elements');
+
+    //Click on Radio Button menu item
+    await demoQA.clickMenuItem('Radio Button');
+
+    // Verify URL contains "radio-button"
+    await demoQA.verifyCurrentUrl(/radio-button/);
+
+    // Verify header is "Radio Button"
+    await demoQA.verifyCurrentHeader('Radio Button');
+    
     //Verify that No option is disabled
-    await expect(page.getByRole('radio',{name: 'No'})).toBeDisabled;
+    await expect(page.getByRole('radio', { name: 'No' })).toBeDisabled;
 
     //Select the Yes option
-    await page.getByRole('radio',{name: 'Yes'}).check();
+    await page.getByRole('radio', { name: 'Yes' }).check();
 
     //Verify it is selected
     await expect(page.getByRole('radio', { name: 'Yes' })).toBeChecked();
-    
+
     //Verify the text message 'You have selected' appears 
     await expect(page.getByText("You have selected")).toBeVisible();
 
@@ -25,11 +35,11 @@ test.describe('DemoQA Radio Button page', () => {
     await expect(page.locator('.text-success')).toHaveText('Yes');
 
     //Select the Impressive option
-    await page.getByRole('radio',{name: 'Impressive'}).check();
+    await page.getByRole('radio', { name: 'Impressive' }).check();
 
     //Verify it is selected
     await expect(page.getByRole('radio', { name: 'Impressive' })).toBeChecked();
-    
+
     //Verify the text message 'You have selected Impressive' appears 
     await expect(page.getByText("You have selected")).toBeVisible();
 
