@@ -1,12 +1,29 @@
 import { test, expect } from '@playwright/test';
+import { DemoQAPage } from './page/DemoQAPage';
 
 test.describe('DemoQA Text Box page', () => {
   test('should load page, submit form and verify output', async ({ page }) => {
-    await page.goto('https://demoqa.com/text-box');
+        const demoQA = new DemoQAPage(page);
+    
+        await demoQA.goto();
+    
+        // Click on 'Elements'
+        await demoQA.clickCardByName('Elements');
+    
+        //Click on Text Box menu item
+        await demoQA.clickMenuItem('Text Box');
+    
+        // Verify URL contains "text-box"
+        await demoQA.verifyCurrentUrl(/text-box/);
+    
+        // Verify header is "Text Box"
+        await demoQA.verifyCurrentHeader('Text Box');
+    
+  /*   await page.goto('https://demoqa.com/text-box');
 
     // Verify page URL and heading
     await expect(page).toHaveURL(/text-box/);
-    await expect(page.getByRole('heading', { name: 'Text Box' })).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'Text Box' })).toBeVisible(); */
 
     // Verify form fields are visible
     const fullName = page.locator('#userName');
