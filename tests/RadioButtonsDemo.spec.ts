@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { DemoQAPage } from './DemoQAPage';
+import { DemoQAPage } from './page/DemoQAPage';
 
 test.describe('DemoQA Radio Button page', () => {
   test('should load page and verify the radio button check', async ({ page }) => {

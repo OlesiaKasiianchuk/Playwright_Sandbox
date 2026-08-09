@@ -1,5 +1,5 @@
 import { test } from '@playwright/test';
-import { DemoQAPage } from './DemoQAPage';
+import { DemoQAPage } from './page/DemoQAPage';
 
 test('Navigation from main page', async ({ page }) => {
 const demoQA = new DemoQAPage(page);
