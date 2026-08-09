@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { DemoQAPage } from './page/DemoQAPage';
+import { webTableData } from './data/webTableData';
+
 
 test('verify web table', async ({ page }) => {
     // ---- goto Web Tables page----
@@ -24,21 +26,21 @@ test('verify web table', async ({ page }) => {
     await expect(rows).toHaveCount(3);
 
     // ---- getRowByEmail ----
-    const email = 'cierra@example.com';
+    const employee = webTableData.existingEmployee;
     const row = page.locator('table tbody tr', {
-        has: page.locator('td', { hasText: email }),
+        has: page.locator('td', { hasText: employee.email }),
     });
 
     // ---- expectRow ----
     const cells = row.locator('td');
 
     const expectedValues = [
-        'Cierra',
-        'Vega',
-        '39',
-        'cierra@example.com',
-        '10000',
-        'Insurance',
+        employee.firstName,
+        employee.lastName,
+        employee.age,
+        employee.email,
+        employee.salary,
+        employee.department,
     ];
 
     for (let i = 0; i < expectedValues.length; i++) {
