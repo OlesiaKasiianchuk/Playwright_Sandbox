@@ -33,13 +33,27 @@ await this.page.waitForLoadState('domcontentloaded');
 * Click a card by visible text
 */
 async clickCardByName(cardName: string): Promise<void> {
-const card = this.cardTitles.filter({ hasText: cardName });
+const card = this.page.getByRole('link', {
+name: cardName,
+exact: true
+});
+
 await expect(card).toBeVisible();
 await card.click();
 }
 
+/*Click menu item*/
+async clickMenuItem(itemName: string): Promise<void> {
+const menuItem = this.page.locator('a.router-link').filter({
+hasText: itemName
+});
+await expect(menuItem).toBeVisible();
+await menuItem.click();
+await this.page.waitForLoadState('domcontentloaded');
+}
+
 /**
-* Click all main cards (Elements, Forms, Alerts, Widgets, Interactions)
+* Click all main cards (Elements, Forms, Alerts, Widgets, Book Store Application)
 */
 async clickAllCards(): Promise<void> {
 const cards = [
@@ -47,7 +61,8 @@ const cards = [
 'Forms',
 'Alerts, Frame & Windows',
 'Widgets',
-'Interactions'
+'Interactions',
+'Book Store Application'
 ];
 
 for (const name of cards) {
