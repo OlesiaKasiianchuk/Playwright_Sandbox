@@ -41,12 +41,14 @@ await card.click();
 
 /*Click menu item*/
 async clickMenuItem(itemName: string): Promise<void> {
-const menuItem = this.page.locator('a.router-link').filter({
-hasText: itemName
-});
-await expect(menuItem).toBeVisible();
-await menuItem.click();
-await this.page.waitForLoadState('domcontentloaded');
+  const menuItem = this.page.getByRole('link', {
+    name: itemName,
+    exact: true,
+  });
+
+  await expect(menuItem).toBeVisible();
+  await menuItem.click();
+  await this.page.waitForLoadState('domcontentloaded');
 }
 
 /**
