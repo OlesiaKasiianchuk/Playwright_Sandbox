@@ -7,17 +7,8 @@ test.describe('DemoQA Buttons page', () => {
 
     await demoQA.goto();
 
-    // Click on 'Elements'
-    await demoQA.clickCardByName('Elements');
-
-    //Click on Buttons menu item
-    await demoQA.clickMenuItem('Buttons');
-
-    // Verify URL contains "buttons"
-    await demoQA.verifyCurrentUrl(/buttons/);
-
-    // Verify header is "Buttons"
-    await demoQA.verifyCurrentHeader('Buttons');
+    // Click on 'Elements', then select 'Buttons' from the menu, and verify the URL and header
+    await demoQA.clickCardAndMenu('Elements', 'Buttons', /buttons/, 'Buttons');
     
     //Double-click on the button with name 'Double Click Me'
     await page.getByRole('button', { name: 'Double Click Me' }).dblclick();

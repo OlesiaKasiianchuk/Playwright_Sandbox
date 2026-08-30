@@ -2,44 +2,38 @@ import { test, expect } from '@playwright/test';
 import { DemoQAPage } from './page/DemoQAPage';
 
 test.describe('Book Store Search', () => {
-  test.beforeEach(async ({ page }) => {
-     const demoQA = new DemoQAPage(page);
+    test.beforeEach(async ({ page }) => {
+        const demoQA = new DemoQAPage(page);
 
-    await demoQA.goto();
+        await demoQA.goto();
 
-    // Click on 'Book Store Application'
-    await demoQA.clickCardByName('Book Store Application');
+        // Click on 'Book Store Application', then select 'Book Store' from the menu, and verify the URL
+        await demoQA.clickCardAndMenu('Book Store Application', 'Book Store', /books/);
+    });
 
-    //Click on Book Store menu item
-    await demoQA.clickMenuItem('Book Store');
+    test('should return 1 result when searching for "git"', async ({ page }) => {
+        const searchBox = page.locator('#searchBox');
 
-    // Verify URL contains "books"
-    await demoQA.verifyCurrentUrl(/books/);
-  });
+        await searchBox.fill('git');
 
-  test('should return 1 result when searching for "git"', async ({ page }) => {
-    const searchBox = page.locator('#searchBox');
+        const books = page.locator('span[id^="see-book-"] > a');
 
-    await searchBox.fill('git');
+        await expect(books).toHaveCount(1);
+        await expect(books.first()).toHaveText('Git Pocket Guide');
+    });
 
-    const books = page.locator('a[href*="/books?search="]');
+    test('should return 4 results when searching for "Java"', async ({ page }) => {
+        const searchBox = page.locator('#searchBox');
 
-    await expect(books).toHaveCount(1);
-    await expect(books.first()).toHaveText('Git Pocket Guide');
-  });
+        await searchBox.fill('Java');
 
-  test('should return 4 results when searching for "Java"', async ({ page }) => {
-    const searchBox = page.locator('#searchBox');
+        const books = page.locator('span[id^="see-book-"] > a');
 
-    await searchBox.fill('Java');
+        await expect(books).toHaveCount(4);
 
-    const books = page.locator('a[href*="/books?search="]');
 
-    await expect(books).toHaveCount(4);
-
-    await expect(books.nth(0)).toContainText(/JavaScript/i);
-    await expect(books.nth(1)).toBeVisible();
-    await expect(books.nth(2)).toBeVisible();
-    await expect(books.nth(3)).toBeVisible();
-  });
+        for (let index = 0; index < 4; index++) {
+            await expect(books.nth(index)).toContainText(/Java/i);
+        }
+    });
 });

@@ -7,17 +7,8 @@ test.describe('DemoQA Radio Button page', () => {
 
     await demoQA.goto();
 
-    // Click on 'Elements'
-    await demoQA.clickCardByName('Elements');
-
-    //Click on Radio Button menu item
-    await demoQA.clickMenuItem('Radio Button');
-
-    // Verify URL contains "radio-button"
-    await demoQA.verifyCurrentUrl(/radio-button/);
-
-    // Verify header is "Radio Button"
-    await demoQA.verifyCurrentHeader('Radio Button');
+    // Click on 'Elements', then select 'Radio Button' from the menu, and verify the URL and header
+    await demoQA.clickCardAndMenu('Elements', 'Radio Button', /radio-button/, 'Radio Button');
     
     //Verify that No option is disabled
     await expect(page.getByRole('radio', { name: 'No' })).toBeDisabled;

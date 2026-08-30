@@ -8,18 +8,9 @@ test('verify web table', async ({ page }) => {
     const demoQA = new DemoQAPage(page);
 
     await demoQA.goto();
-
-    // Click on 'Elements'
-    await demoQA.clickCardByName('Elements');
-
-    //Click on Web Tables menu item
-    await demoQA.clickMenuItem('Web Tables');
-
-    // Verify URL contains "webtables"
-    await demoQA.verifyCurrentUrl(/webtables/);
-
-    // Verify header is "Web Tables"
-    await demoQA.verifyCurrentHeader('Web Tables');
+    
+    // Click on 'Elements', then select 'Web Tables' from the menu, and verify the URL and header
+    await demoQA.clickCardAndMenu('Elements', 'Web Tables', /webtables/, 'Web Tables');
 
     // ---- waitForTable ----
     const rows = page.locator('table tbody tr');
