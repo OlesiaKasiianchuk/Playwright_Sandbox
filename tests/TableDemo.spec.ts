@@ -1,40 +1,78 @@
 import { test, expect } from '@playwright/test';
 import { DemoQAPage } from './page/DemoQAPage';
+import { WebTableHelper } from './page/WebTableHelper';
 import { webTableData } from './data/webTableData';
 
-
 test('verify web table', async ({ page }) => {
-    // ---- goto Web Tables page----
     const demoQA = new DemoQAPage(page);
+    const tableHelper = new WebTableHelper(page);
 
     await demoQA.goto();
-    
-    // Click on 'Elements', then select 'Web Tables' from the menu, and verify the URL and header
     await demoQA.clickCardAndMenu('Elements', 'Web Tables', /webtables/, 'Web Tables');
 
-    // ---- waitForTable ----
-    const rows = page.locator('table tbody tr');
-    await expect(rows).toHaveCount(3);
+    await tableHelper.waitForTable(3);
 
-    // ---- getRowByEmail ----
     const employee = webTableData.existingEmployee;
-    const row = page.locator('table tbody tr', {
-        has: page.locator('td', { hasText: employee.email }),
-    });
-
-    // ---- expectRow ----
-    const cells = row.locator('td');
+    const row = tableHelper.getRowByEmail(employee.email);
 
     const expectedValues = [
         employee.firstName,
         employee.lastName,
-        employee.age,
+        employee.age.toString(),
         employee.email,
-        employee.salary,
+        employee.salary.toString(),
         employee.department,
     ];
 
-    for (let i = 0; i < expectedValues.length; i++) {
-        await expect(cells.nth(i)).toHaveText(expectedValues[i]);
-    }
+    await tableHelper.verifyRowData(row, expectedValues);
 });
+
+test('Web Table create and edit flow', async ({ page }) => {
+    const demoQA = new DemoQAPage(page);
+    const tableHelper = new WebTableHelper(page);
+
+    await demoQA.goto();
+    await demoQA.clickCardAndMenu('Elements', 'Web Tables', /webtables/, 'Web Tables');
+
+    await tableHelper.waitForTable(3);
+
+    const newEmployee = webTableData.newEmployee;
+    await tableHelper.addEmployee(newEmployee);
+
+    const newRow = tableHelper.getRowByEmail(newEmployee.email);
+    await expect(newRow).toBeVisible();
+
+    const expectedNewValues = [
+        newEmployee.firstName,
+        newEmployee.lastName,
+        newEmployee.age.toString(),
+        newEmployee.email,
+        newEmployee.salary.toString(),
+        newEmployee.department,
+    ];
+
+    await tableHelper.verifyRowData(newRow, expectedNewValues);
+
+    const updatedEmployee = webTableData.updatedEmployee;
+    await tableHelper.editEmployee(newRow, updatedEmployee);
+
+    const updatedRow = tableHelper.getRowByEmail(updatedEmployee.email);
+    await expect(updatedRow).toBeVisible();
+
+    const expectedUpdatedValues = [
+        updatedEmployee.firstName,
+        updatedEmployee.lastName,
+        updatedEmployee.age.toString(),
+        updatedEmployee.email,
+        updatedEmployee.salary.toString(),
+        updatedEmployee.department,
+    ];
+
+    await tableHelper.verifyRowData(updatedRow, expectedUpdatedValues);
+
+    await tableHelper.deleteEmployee(updatedRow);
+    await expect(updatedRow).toHaveCount(0);
+
+    await tableHelper.waitForTable(3);
+});
+
