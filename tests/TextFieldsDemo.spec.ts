@@ -30,7 +30,7 @@ test.describe('DemoQA Text Box page', () => {
     await expect(submitBtn).toBeVisible();
 
     await textBoxPage.fillTextBoxForm(textBoxTestData.validUser);
-    await textBoxPage.submit();
+    await textBoxPage.submitTextBoxForm();
     await textBoxPage.verifyTextBoxOutput(textBoxTestData.validUser);
   });
 
@@ -48,7 +48,7 @@ test.describe('DemoQA Text Box page', () => {
     );
 
     await textBoxPage.fillTextBoxForm(textBoxTestData.invalidUser);
-    await textBoxPage.submit();
+    await textBoxPage.submitTextBoxForm();
 
     const emailField = page.locator('#userEmail');
 

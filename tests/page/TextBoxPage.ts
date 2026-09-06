@@ -17,7 +17,7 @@ export class TextBoxPage {
         await this.page.locator('#permanentAddress').fill(data.permanentAddress);
     }
 
-    async submit(): Promise<void> {
+    async submitTextBoxForm(): Promise<void> {
         await this.page.locator('#submit').click();
     }
 
