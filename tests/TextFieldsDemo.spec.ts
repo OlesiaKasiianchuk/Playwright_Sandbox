@@ -4,18 +4,19 @@ import { textBoxTestData } from './data/textBoxData';
 import { TextBoxPage } from './page/TextBoxPage';
 
 test.describe('DemoQA Text Box page', () => {
-  test('should load page, submit form and verify output', async ({ page }) => {
+  test.beforeEach(async ({ page }) => {
     const demoQA = new DemoQAPage(page);
-    const textBoxPage = new TextBoxPage(page);
-
     await demoQA.goto();
-
     await demoQA.clickCardAndMenu(
       'Elements',
       'Text Box',
       /text-box/,
       'Text Box'
     );
+  });
+  test('should load page, submit form and verify output', async ({ page }) => {
+
+    const textBoxPage = new TextBoxPage(page);
 
     const fullName = page.locator('#userName');
     const email = page.locator('#userEmail');
@@ -35,17 +36,8 @@ test.describe('DemoQA Text Box page', () => {
   });
 
   test('should show validation error for invalid email', async ({ page }) => {
-    const demoQA = new DemoQAPage(page);
+
     const textBoxPage = new TextBoxPage(page);
-
-    await demoQA.goto();
-
-    await demoQA.clickCardAndMenu(
-      'Elements',
-      'Text Box',
-      /text-box/,
-      'Text Box'
-    );
 
     await textBoxPage.fillTextBoxForm(textBoxTestData.invalidUser);
     await textBoxPage.submitTextBoxForm();
