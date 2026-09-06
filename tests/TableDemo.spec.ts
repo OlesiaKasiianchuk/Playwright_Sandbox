@@ -3,13 +3,15 @@ import { DemoQAPage } from './page/DemoQAPage';
 import { WebTableHelper } from './page/WebTableHelper';
 import { webTableData } from './data/webTableData';
 
-test('verify web table', async ({ page }) => {
-    const demoQA = new DemoQAPage(page);
+test.describe('DemoQA Web Tables page', () => {
+    test.beforeEach(async ({ page }) => {
+        const demoQA = new DemoQAPage(page);
+        await demoQA.goto();
+        await demoQA.clickCardAndMenu('Elements', 'Web Tables', /webtables/, 'Web Tables');
+    })
+test('Verify web table', async ({ page }) => {
+ 
     const tableHelper = new WebTableHelper(page);
-
-    await demoQA.goto();
-    await demoQA.clickCardAndMenu('Elements', 'Web Tables', /webtables/, 'Web Tables');
-
     await tableHelper.waitForTable(3);
 
     const employee = webTableData.existingEmployee;
@@ -28,11 +30,8 @@ test('verify web table', async ({ page }) => {
 });
 
 test('Web Table create and edit flow', async ({ page }) => {
-    const demoQA = new DemoQAPage(page);
-    const tableHelper = new WebTableHelper(page);
 
-    await demoQA.goto();
-    await demoQA.clickCardAndMenu('Elements', 'Web Tables', /webtables/, 'Web Tables');
+    const tableHelper = new WebTableHelper(page);
 
     await tableHelper.waitForTable(3);
 
@@ -75,4 +74,4 @@ test('Web Table create and edit flow', async ({ page }) => {
 
     await tableHelper.waitForTable(3);
 });
-
+});
