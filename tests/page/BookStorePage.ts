@@ -103,4 +103,33 @@ export class BookStorePage {
   async expectBookInCollection(bookTitle: string): Promise<void> {
     await expect(this.collectionBook(bookTitle)).toHaveCount(1);
   }
+
+async addSearchResultToCollection(searchTerm: string): Promise<string> {
+  await this.searchBook(searchTerm);
+
+  const book = this.searchResults().first();
+  await expect(book).toBeVisible();
+
+  const title = await book.innerText();
+
+  await book.click();
+  await this.addToCollection();
+  await this.openProfile();
+  await this.expectBookInCollection(title);
+
+  return title;
+  }
+
+  async deleteBookFromCollection(title: string): Promise<void> {
+    const href = await this.collectionBook(title).getAttribute('href');
+    expect(href).toBeTruthy();
+
+    const isbn = new URL(href!, 'https://demoqa.com').searchParams.get('search');
+    expect(isbn).toBeTruthy();
+
+    await this.page.locator(`#delete-record-${isbn}`).click();
+    await this.page.locator('#closeSmallModal-ok').click();
+
+    await expect(this.collectionBook(title)).toHaveCount(0);
+  }
 }
