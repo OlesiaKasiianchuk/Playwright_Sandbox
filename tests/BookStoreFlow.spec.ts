@@ -1,20 +1,28 @@
 import { test, expect } from '@playwright/test';
 import { BookStorePage } from './page/BookStorePage';
 
-test('should add books to the user collection and delete them', async ({ page, request }) => {
-  const username = `playwright_${Date.now()}`;
-  const password = 'Password1!';
+test.describe('Test Book Store Flow', () => {
+  let username: string;
+  let password: string;
+  let userID: string;
 
-  const createUserResponse = await request.post('/Account/v1/User', {
-    data: { userName: username, password },
+  test.beforeEach(async ({ page, request }) => {
+    username = `playwright_${Date.now()}`;
+    password = 'Password1!';
+
+    const createUserResponse = await request.post('/Account/v1/User', {
+      data: { userName: username, password },
+    });
+
+    expect(createUserResponse.status()).toBe(201);
+
+    const responseBody = await createUserResponse.json();
+    userID = responseBody.userID;
   });
 
-  expect(createUserResponse.status()).toBe(201);
+  test('Should login with created user, search books, add books to the user collection and delete them', async ({ page }) => {
+    const bookStore = new BookStorePage(page);
 
-  const { userID } = await createUserResponse.json();
-  const bookStore = new BookStorePage(page);
-
-  try {
     await bookStore.openLogin();
     await bookStore.login(username, password);
     await bookStore.openBookStore();
@@ -26,7 +34,9 @@ test('should add books to the user collection and delete them', async ({ page, r
     const javaBookTitle = await bookStore.addSearchResultToCollection('java');
 
     await bookStore.deleteBookFromCollection(javaBookTitle);
-  } finally {
+  });
+
+  test.afterEach(async ({ request }) => {
     const loginResponse = await request.post('/Account/v1/Login', {
       data: {
         userName: username,
@@ -45,5 +55,5 @@ test('should add books to the user collection and delete them', async ({ page, r
 
       expect(deleteResponse.ok()).toBeTruthy();
     }
-  }
+  });
 });
