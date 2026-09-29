@@ -1,8 +1,10 @@
+//delete not used expected
 import { test, expect } from '@playwright/test';
 import { BookStorePage } from './page/BookStorePage';
 
 test.describe('Book Store Search', () => {
     test.beforeEach(async ({ page }) => {
+        //move to the describe level
         const bookStore = new BookStorePage(page);
         await bookStore.openBookStore();
     });

@@ -5,16 +5,18 @@ import { BookStorePage } from './page/BookStorePage';
 
 test.describe('DemoQA Book Store login', () => {
   test('Log in with an existing user', async ({ page }) => {
+    //move to the describe level
     const bookStore = new BookStorePage(page);
-
+//move to the beforeEach section
     await bookStore.openLogin();
     await bookStore.login(
       bookStoreUser.username,
       bookStoreUser.password
     );
-
+//create a general method in base page isElementHaveText(text)
     await expect(page.locator('#userName-value'))
       .toHaveText(bookStoreUser.username);
+      //create a general method isElementVisible(locator, boolean)
     await expect(
       page.getByRole('button', { name: 'Logout', exact: true })
     ).toBeVisible();
