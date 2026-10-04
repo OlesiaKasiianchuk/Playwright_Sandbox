@@ -9,6 +9,8 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    env:
+      BOOKSTORE_TEST_PASSWORD: ${{ secrets.BOOKSTORE_TEST_PASSWORD }}
 
     steps:
       - name: Checkout repository

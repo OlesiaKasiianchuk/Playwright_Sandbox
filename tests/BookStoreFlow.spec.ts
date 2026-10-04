@@ -1,66 +1,44 @@
-import { test, expect } from '@playwright/test';
-import { BookStorePage } from './page/BookStorePage';
+import { test } from '@playwright/test';
+import { BookStoreApi } from './api/BookStoreApi';
+import { createBookStoreUserData } from './data/bookStoreUserData';
+import { BookStoreActions } from './page/BookStoreActions';
+import { BookStoreVerifications } from './page/BookStoreVerifications';
 
 test.describe('Test Book Store Flow', () => {
   let username: string;
   let password: string;
-  let userID: string;
+  let userID: string | undefined;
+  let bookStore: BookStoreActions;
+  let verifications: BookStoreVerifications;
 
-  //const bookStore = new BookStorePage(page);
-
-  //remove unused page
   test.beforeEach(async ({ page, request }) => {
-    //move user test data. Create secret key for CI/CD
-    username = `playwright_${Date.now()}`;
-    password = 'Password1!';
+    bookStore = new BookStoreActions(page);
+    verifications = new BookStoreVerifications(page);
 
-    //move API requests methods to the another place
-    const createUserResponse = await request.post('/Account/v1/User', {
-      data: { userName: username, password },
-    });
-
-    expect(createUserResponse.status()).toBe(201);
-
-    const responseBody = await createUserResponse.json();
-    userID = responseBody.userID;
+    ({ username, password } = createBookStoreUserData());
+    userID = await new BookStoreApi(request).createUser(username, password);
   });
 
   test('Should login with created user, search books, add books to the user collection and delete them', async ({ page }) => {
-    //move to the describe level
-    const bookStore = new BookStorePage(page);
-
-    await bookStore.openLogin();
+    await bookStore.openBookStorePage('Book Store Application', 'Login', /login/);
     await bookStore.login(username, password);
-    await bookStore.openBookStore();
-//maybe it is better to split this method
-    await bookStore.addSearchResultToCollection('git');
-//create a general methos for clickOnElement(locator)
-    await page.locator('#gotoStore').click();
+    await verifications.expectProfilePage();
+    await bookStore.openBookStorePage('Book Store Application', 'Book Store', /books/);
+
+    const gitBookTitle = await bookStore.addSearchResultToCollection('git');
+    await verifications.expectBookInCollection(gitBookTitle);
+    await bookStore.clickOnElement(page.locator('#gotoStore'));
 
     const javaBookTitle = await bookStore.addSearchResultToCollection('java');
+    await verifications.expectBookInCollection(javaBookTitle);
 
     await bookStore.deleteBookFromCollection(javaBookTitle);
+    await verifications.expectBookNotInCollection(javaBookTitle);
   });
 
   test.afterEach(async ({ request }) => {
-    const loginResponse = await request.post('/Account/v1/Login', {
-      data: {
-        userName: username,
-        password,
-      },
-    });
-
-    if (loginResponse.ok()) {
-      //how it get token from all json responce?
-      const { token } = await loginResponse.json();
-
-      const deleteResponse = await request.delete(`/Account/v1/User/${userID}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-
-      expect(deleteResponse.ok()).toBeTruthy();
+    if (userID) {
+      await new BookStoreApi(request).deleteUser(userID, username, password);
     }
   });
 });
