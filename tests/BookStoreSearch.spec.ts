@@ -7,7 +7,6 @@ test.describe('Book Store Search', () => {
     let bookStore: BookStoreActions;
     let verifications: BookStoreVerifications;   
     test.beforeEach(async ({ page }) => {
-        //move to the describe level
         bookStore = new BookStoreActions(page);
         verifications = new BookStoreVerifications(page);
         await bookStore.openBookStorePage('Book Store Application', 'Book Store', /books/);

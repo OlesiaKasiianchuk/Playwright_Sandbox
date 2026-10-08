@@ -26,7 +26,7 @@ test.describe('DemoQA Book Store login', () => {
       page.locator('#userName-value'),
       bookStoreUser.username
     );
-      //create a general method isElementVisible(locator, boolean)
+    
     await verifications.isElementVisible(
       page.getByRole('button', { name: 'Logout', exact: true }),
       true
