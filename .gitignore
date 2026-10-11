@@ -1,2 +1,7 @@
 # ignore folder test-results
 test-results/
+/node_modules/
+/node_modules/
+/playwright-report/
+/node_modules/
+/node_modules/.package-lock.json
