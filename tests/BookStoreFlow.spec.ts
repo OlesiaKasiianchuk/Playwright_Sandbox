@@ -4,7 +4,7 @@ import { createBookStoreUserData } from './data/bookStoreUserData';
 import { BookStoreActions } from './page/BookStoreActions';
 import { BookStoreVerifications } from './page/BookStoreVerifications';
 
-test.describe('Test Book Store Flow', () => {
+test.describe('Test Book Store Flow', { tag: '@SmokeTest' }, () => {
   let username: string;
   let password: string;
   let userID: string | undefined;

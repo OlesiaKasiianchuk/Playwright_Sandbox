@@ -4,7 +4,7 @@ import { BookStoreActions } from './page/BookStoreActions';
 import { BookStoreVerifications } from './page/BookStoreVerifications';
 
 
-test.describe('DemoQA Book Store login', () => {
+test.describe('DemoQA Book Store login', { tag: '@SmokeTest' }, () => {
   let bookStore: BookStoreActions;
   let verifications: BookStoreVerifications;
 

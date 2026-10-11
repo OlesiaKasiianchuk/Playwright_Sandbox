@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 import { BookStoreActions } from './page/BookStoreActions';
 import { BookStoreVerifications } from './page/BookStoreVerifications';
 
-test.describe('Book Store Search', () => {
+test.describe('Book Store Search', { tag: '@SmokeTest' }, () => {
     let bookStore: BookStoreActions;
     let verifications: BookStoreVerifications;   
     test.beforeEach(async ({ page }) => {

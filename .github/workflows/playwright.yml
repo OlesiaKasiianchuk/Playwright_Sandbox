@@ -4,7 +4,7 @@ on:
   push:
     branches: [ main, master ]
   pull_request:
-    branches: [ main, master ]
+    branches: [ main ]
 
 jobs:
   test:
@@ -28,7 +28,12 @@ jobs:
       - name: Install Playwright browsers
         run: npx playwright install --with-deps
 
-      - name: Run Playwright tests
+      - name: Run SmokeTest tests on pull requests to main
+        if: github.event_name == 'pull_request'
+        run: npx playwright test --grep @SmokeTest
+
+      - name: Run full Playwright test suite on pushes
+        if: github.event_name == 'push'
         run: npm test
 
       - name: Upload HTML report
